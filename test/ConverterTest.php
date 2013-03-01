@@ -16,11 +16,6 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(ContentType::jpeg(), ContentType::byString($bin));
     }
 
-    public function testCropOnly()
-    {
-        $bin = self::converter()->convert(file_get_contents(__DIR__ . '/data/1x1.gif'), self::resizeCropHeightCommand());
-    }
-
     private static function converter()
     {
         $converter = new Converter;
@@ -38,13 +33,6 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     {
         $command = new Command();
         $command->configure('10x5_h');
-        return $command;
-    }
-
-    private static function resizeCropHeightCommand()
-    {
-        $command = new Command();
-        $command->configure('_h');
         return $command;
     }
 }
