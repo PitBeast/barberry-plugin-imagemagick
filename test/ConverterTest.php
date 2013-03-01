@@ -10,6 +10,18 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(ContentType::jpeg(), ContentType::byString($bin));
     }
 
+    public function testConvertsGitToJpegWithResizingAndCropping()
+    {
+        $bin = self::converter()->convert(file_get_contents(__DIR__ . '/data/1x1.gif'), self::resizeAndCropHeight10x5Command());
+        $this->assertEquals(ContentType::jpeg(), ContentType::byString($bin));
+    }
+
+    public function testCropOnly()
+    {
+        $bin = self::converter()->convert(file_get_contents(__DIR__ . '/data/1x1.gif'), self::resizeCropHeightCommand());
+        print_r(ContentType::byString($bin));
+    }
+
     private static function converter()
     {
         $converter = new Converter;
@@ -20,6 +32,20 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     {
         $command = new Command();
         $command->configure('10x10');
+        return $command;
+    }
+
+    private static function resizeAndCropHeight10x5Command()
+    {
+        $command = new Command();
+        $command->configure('10x5_h');
+        return $command;
+    }
+
+    private static function resizeCropHeightCommand()
+    {
+        $command = new Command();
+        $command->configure('_h');
         return $command;
     }
 }

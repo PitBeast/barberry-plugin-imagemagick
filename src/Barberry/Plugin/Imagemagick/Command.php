@@ -11,6 +11,8 @@ class Command implements InterfaceCommand
     private $width;
     private $height;
 
+    private $cropping = null;
+
     /**
      * @param string $commandString
      * @return self
@@ -18,10 +20,19 @@ class Command implements InterfaceCommand
     public function configure($commandString)
     {
         $params = explode("_", $commandString);
-        foreach ($params as $val) {
-            if (preg_match("@^([\d]*)x([\d]*)$@", $val, $regs)) {
-                $this->width = strlen($regs[1]) ? (int)$regs[1] : null;
-                $this->height = strlen($regs[2]) ? (int)$regs[2] : null;
+        for ($i=0; $i<count($params); $i++) {
+            switch ($i) {
+                case 0:
+                    if (preg_match("@^([\d]*)x([\d]*)$@", $params[$i], $regs)) {
+                        $this->width = strlen($regs[1]) ? (int)$regs[1] : null;
+                        $this->height = strlen($regs[2]) ? (int)$regs[2] : null;
+                    }
+                    break;
+                case 1:
+                    if ($this->width && $this->height && preg_match("@^([wh])$@", $params[$i], $regs)) {
+                        $this->cropping = $regs[1];
+                    }
+                    break;
             }
         }
         return $this;
@@ -42,8 +53,14 @@ class Command implements InterfaceCommand
         return min($this->height, self::MAX_HEIGHT);
     }
 
+    public function cropping()
+    {
+        return $this->cropping;
+    }
+
     public function __toString()
     {
-        return ($this->width || $this->height) ? strval($this->width . 'x' . $this->height) : '';
+        $croppingPart = ($this->width && $this->height && $this->cropping) ? strval('_' . $this->cropping) : '';
+        return (($this->width || $this->height) ? strval($this->width . 'x' . $this->height) : '') . $croppingPart;
     }
 }
