@@ -19,7 +19,6 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
     public function testCropOnly()
     {
         $bin = self::converter()->convert(file_get_contents(__DIR__ . '/data/1x1.gif'), self::resizeCropHeightCommand());
-        print_r(ContentType::byString($bin));
     }
 
     private static function converter()

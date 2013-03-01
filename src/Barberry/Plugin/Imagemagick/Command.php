@@ -11,7 +11,7 @@ class Command implements InterfaceCommand
     private $width;
     private $height;
 
-    private $cropping = null;
+    private $cropping;
 
     /**
      * @param string $commandString
@@ -30,7 +30,7 @@ class Command implements InterfaceCommand
                     break;
                 case 1:
                     if ($this->width && $this->height && preg_match("@^([wh])$@", $params[$i], $regs)) {
-                        $this->cropping = $regs[1];
+                        $this->cropping = (array_key_exists(1, $regs)) ? $regs[1] : null;
                     }
                     break;
             }
